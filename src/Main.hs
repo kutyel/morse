@@ -13,7 +13,7 @@ convertToMorse =
   forever $ do
     weAreDone <- hIsEOF stdin
     when weAreDone exitSuccess
-  -- otherwise, proceed.
+    -- otherwise, proceed.
     line <- hGetLine stdin
     convertLine line
   where
@@ -30,7 +30,7 @@ convertFromMorse =
   forever $ do
     weAreDone <- hIsEOF stdin
     when weAreDone exitSuccess
-  -- otherwise, proceed.
+    -- otherwise, proceed.
     line <- hGetLine stdin
     convertLine line
   where

@@ -42,3 +42,4 @@ test-suite tests
                      , containers
                      , morse
                      , QuickCheck
+                     
