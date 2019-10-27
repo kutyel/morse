@@ -1,43 +1,34 @@
 module Main where
 
 import           Control.Monad      (forever, when)
-import           Data.List          (intercalate)
-import           Data.Traversable   (traverse)
 import           Morse              (morseToChar, stringToMorse)
 import           System.Environment (getArgs)
 import           System.Exit        (exitFailure, exitSuccess)
-import           System.IO          (hGetLine, hIsEOF, stdin)
+import           System.IO
+
+convertLine :: (String -> IO ()) -> IO ()
+convertLine convert = do
+  weAreDone <- isEOF
+  when weAreDone exitSuccess
+  -- otherwise, proceed.
+  line <- getLine
+  convert line
 
 convertToMorse :: IO ()
-convertToMorse =
-  forever $ do
-    weAreDone <- hIsEOF stdin
-    when weAreDone exitSuccess
-    -- otherwise, proceed.
-    line <- hGetLine stdin
-    convertLine line
+convertToMorse = forever $ convertLine to
   where
-    convertLine line = do
-      let morse = stringToMorse line
-      case morse of
-        (Just str) -> putStrLn (intercalate " " str)
+    to line =
+      case stringToMorse line of
+        (Just str) -> putStrLn (unwords str)
         Nothing -> do
           putStrLn $ "ERROR: " ++ line
           exitFailure
 
 convertFromMorse :: IO ()
-convertFromMorse =
-  forever $ do
-    weAreDone <- hIsEOF stdin
-    when weAreDone exitSuccess
-    -- otherwise, proceed.
-    line <- hGetLine stdin
-    convertLine line
+convertFromMorse = forever $ convertLine from
   where
-    convertLine line = do
-      let decoded :: Maybe String
-          decoded = traverse morseToChar (words line)
-      case decoded of
+    from line =
+      case traverse morseToChar (words line) of
         (Just s) -> putStrLn s
         Nothing -> do
           putStrLn $ "ERROR: " ++ line
